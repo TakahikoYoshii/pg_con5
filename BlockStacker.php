@@ -1,18 +1,17 @@
 <?php
 
 /**
-|--------------------------------------------------------------------------
-| BlockStacker Class
-|--------------------------------------------------------------------------
-*/
-
+ * |--------------------------------------------------------------------------
+ * | BlockStacker Class
+ * |--------------------------------------------------------------------------
+ */
 class BlockStacker
 {
     /**
-    |--------------------------------------------------------------------------
-    | フィールド初期化
-    |--------------------------------------------------------------------------
-    */
+     * |--------------------------------------------------------------------------
+     * | フィールド初期化
+     * |--------------------------------------------------------------------------
+     */
     public $inputInfo = []; // 入力用の配列
     public $total; // 入力された箱の総数
     public $memory; // メモ化用の配列
@@ -21,10 +20,10 @@ class BlockStacker
     public $boxCorrespondenceTable = ['front', 'back', 'left', 'right', 'top', 'bottom']; // 面の変換表
 
     /**
-    |--------------------------------------------------------------------------
-    | 入力されたものを配列に格納します。
-    |--------------------------------------------------------------------------
-    */
+     * |--------------------------------------------------------------------------
+     * | 入力されたものを配列に格納します。
+     * |--------------------------------------------------------------------------
+     */
     public function getInput()
     {
         // 高速化のため標準入力を変数に代入する
@@ -41,43 +40,43 @@ class BlockStacker
     }
 
     /**
-    |--------------------------------------------------------------------------
-    | メモ化に必要な配列を作成します。
-    |--------------------------------------------------------------------------
-    */
+     * |--------------------------------------------------------------------------
+     * | メモ化に必要な配列を作成します。
+     * |--------------------------------------------------------------------------
+     */
     public function initializeMemory()
     {
         $totalPlane = 6 * $this->total;
-        $this->memory[0][] = $this->inputInfo[1][0];
-        $this->memory[1][] = $this->inputInfo[1][1];
-        $this->memory[2][] = $this->inputInfo[1][2];
-        $this->memory[3][] = $this->inputInfo[1][3];
-        $this->memory[4][] = $this->inputInfo[1][4];
-        $this->memory[5][] = $this->inputInfo[1][5];
-        for ($i = 6; $i <= $totalPlane; ++$i) {
+        $this->memory[1][1] = 0;
+        $this->memory[2][1] = 1;
+        $this->memory[3][1] = 2;
+        $this->memory[4][1] = 3;
+        $this->memory[5][1] = 4;
+        $this->memory[6][1] = 5;
+        for ($i = 7; $i <= $totalPlane; ++$i) {
             $this->memory[$i] = [];
         }
     }
 
     /**
-    |--------------------------------------------------------------------------
-    | 結果を出力します。
-    |--------------------------------------------------------------------------
-    */
+     * |--------------------------------------------------------------------------
+     * | 結果を出力します。
+     * |--------------------------------------------------------------------------
+     */
     public function output()
     {
         $outputString = "{$this->highest}";
         foreach ($this->memory[$this->highestIndex] as $key => $plane) {
-            $outputString .= "\n" . $this->boxCorrespondenceTable[$key];
+            $outputString .= "\n{$key} " . $this->boxCorrespondenceTable[$plane];
         }
         print $outputString;
     }
 
     /**
-    |--------------------------------------------------------------------------
-    | 一番軽い箱から一箱ずつ、６つの面を処理します。
-    |--------------------------------------------------------------------------
-    */
+     * |--------------------------------------------------------------------------
+     * | 一番軽い箱から一箱ずつ、６つの面を処理します。
+     * |--------------------------------------------------------------------------
+     */
     public function execute()
     {
         foreach ($this->inputInfo as $index => $box) {
@@ -91,10 +90,10 @@ class BlockStacker
     }
 
     /**
-    |--------------------------------------------------------------------------
-    | ひとつの箱のひとつの面に対する処理です。
-    |--------------------------------------------------------------------------
-    */
+     * |--------------------------------------------------------------------------
+     * | ひとつの箱のひとつの面に対する処理です。
+     * |--------------------------------------------------------------------------
+     */
     public function createStack($target, $index, $planeNumber)
     {
         $numberOfLiterBox = 6 * ($index - 1);
@@ -103,19 +102,26 @@ class BlockStacker
         $stack = []; // そのときの積み上げ方
 
         for ($i = 1; $i < $numberOfLiterBox; ++$i) {
+            // どれにも積めなかったときの為
+            if (empty($stack)) {
+                $stack = $this->memory[$i];
+            }
             if ($this->canBeStacked($target, $i)) {
                 $newHeight = count($this->memory[$i]) + 1;
                 if ($newHeight > $maxHeight) {
                     $stack = $this->memory[$i];
-                    $stack[] = $target;
+                    $oppositePlane = ($planeNumber > 3) ? $planeNumber - 4 : $planeNumber + 2;
+                    $stack[$index] = $oppositePlane;
                     $maxHeight = $newHeight;
                 }
             }
         }
-        if (!empty($stack)) {
-            $this->memory[$index] = $stack;
+        // 処理後メモ化
+        if (!empty($stack)) {// 一段目のときのみfalse
+            $this->memory[$memoryIndex] = $stack;
         }
 
+        // 現在の高さが一番なら更新
         if ($this->highest < $maxHeight) {
             $this->highest = $maxHeight;
             $this->highestIndex = $memoryIndex;
@@ -123,16 +129,16 @@ class BlockStacker
     }
 
     /**
-    |--------------------------------------------------------------------------
-    | 箱が積み上げられるかどうか判断します。
-    |--------------------------------------------------------------------------
-    */
+     * |--------------------------------------------------------------------------
+     * | 箱が積み上げられるかどうか判断します。
+     * |--------------------------------------------------------------------------
+     */
     public
     function canBeStacked($target, $memoryIndex)
     {
         $top = end($this->memory[$memoryIndex]);
-//        echo $top;
-        if ($target === $top) {
+        $inputIndex = floor($memoryIndex / 6) + 1;
+        if ($target == $this->inputInfo[$inputIndex][$top]) {
             return true;
         }
         return false;
@@ -141,9 +147,9 @@ class BlockStacker
 
 // 計測スタート
 $time_start = microtime(true);
-$mem = memory_get_usage(true);
-$mem = number_format($mem);
-print("Memory:{$mem}");
+//$mem = memory_get_usage(true);
+//$mem = number_format($mem);
+//print("Memory:{$mem}");
 
 // 実際の処理
 $stacker = new BlockStacker();
@@ -158,8 +164,13 @@ $stacker->output();
 //echo "\n";
 //var_dump($stacker->inputInfo);
 //echo "\n";
-var_dump($stacker->memory);
-echo $stacker->total;
+//echo "\n";
+//var_dump($stacker->memory);
+//echo $stacker->total;
+//echo "\n";
+//echo $stacker->highest;
+//echo "\n";
+//echo $stacker->highestIndex;
 
 // 計測結果表示
 $mem = memory_get_usage(true);

@@ -145,6 +145,9 @@ class BlockStacker
     }
 }
 
+// メモリ上限解放 環境により必要
+ini_set('memory_limit', -1);
+
 // 計測スタート
 $time_start = microtime(true);
 //$mem = memory_get_usage(true);

@@ -69,10 +69,10 @@ class BlockStacker
 
     /**
      * |--------------------------------------------------------------------------
-     * | 一番軽い箱から一箱ずつ、６つの面を処理します。
+     * | 一番軽い箱から一箱ずつ、６つの面を１面ずつ渡します。
      * |--------------------------------------------------------------------------
      */
-    public function execute()
+    public function createStack()
     {
         foreach ($this->inputInfo as $index => $box) {
             yield [$box[0], $index, 1];
@@ -81,12 +81,6 @@ class BlockStacker
             yield [$box[3], $index, 4];
             yield [$box[4], $index, 5];
             yield [$box[5], $index, 6];
-//            $this->createStack($box[0], $index, 1);
-//            $this->createStack($box[1], $index, 2);
-//            $this->createStack($box[2], $index, 3);
-//            $this->createStack($box[3], $index, 4);
-//            $this->createStack($box[4], $index, 5);
-//            $this->createStack($box[5], $index, 6);
         }
     }
 
@@ -95,12 +89,10 @@ class BlockStacker
      * | ひとつの箱のひとつの面に対する処理です。
      * |--------------------------------------------------------------------------
      */
-    public function createStack()
+    public function execute()
     {
-        foreach ($this->execute() as $current) {
-//            $target = $current;
-//            $index = $execute->current();
-//            $planeNumber = $execute->current();
+        $createStack = $this->createStack();
+        foreach ($createStack as $current) {
             $numberOfLiterBox = 6 * ($current[1] - 1);
             $memoryIndex = 6 * ($current[1] - 1) + $current[2];
             $maxHeight = 0; // 今処理しているものの中で一番の高さ
@@ -111,7 +103,6 @@ class BlockStacker
                 $opposite = ($top > 2) ? $top - 3 : $top + 3;
                 $inputIndex = key($this->memory[$i]);
                 if ($current[0] === $this->inputInfo[$inputIndex][$opposite]) {
-//            if ($this->canBeStacked($target, $i)) {
                     $newHeight = count($this->memory[$i]) + 1;
                     if ($newHeight > $maxHeight) {
                         $stack = $this->memory[$i];
@@ -163,7 +154,7 @@ $time_start = microtime(true);
 $stacker = new BlockStacker();
 $stacker->getInput();
 $stacker->initializeMemory();
-$stacker->createStack();
+$stacker->execute();
 $stacker->output();
 
 //echo "\n";

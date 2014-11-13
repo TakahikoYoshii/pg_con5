@@ -4,7 +4,7 @@
 重さを考慮したとき  
 ![](img/2.jpg)  
 メモ化したとき  
-![](img/3.jpg)  
+![](img/3jpg)  
 ## Enviroment  
 *PHP 5.5~*
 

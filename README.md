@@ -1,5 +1,10 @@
 # BlockStacker  
+
 ## Enviroment  
-## Usage
+*PHP 5.5~*
+
+## Usage  
+`php BlockStacker.php`  
+
 
 

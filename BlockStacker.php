@@ -126,29 +126,13 @@ class BlockStacker
             }
         }
     }
-
-//    /**   createStack にそのまま書いた方が速かった */
-//     * |--------------------------------------------------------------------------
-//     * | 箱が積み上げられるかどうか判断します。
-//     * |--------------------------------------------------------------------------
-//     */
-//    public
-//    function canBeStacked($target, $memoryIndex)
-//    {
-//        $top = end($this->memory[$memoryIndex]);
-//        $inputIndex = key($this->memory[$memoryIndex]);
-//        if ($target === $this->inputInfo[$inputIndex][$top]) {
-//            return true;
-//        }
-//        return false;
-//    }
 }
 
 // メモリ上限解放 環境により必要
 ini_set('memory_limit', -1);
 
 // 計測スタート
-$time_start = microtime(true);
+//$time_start = microtime(true);
 
 // 実際の処理
 $stacker = new BlockStacker();
@@ -157,28 +141,18 @@ $stacker->initializeMemory();
 $stacker->execute();
 $stacker->output();
 
-//echo "\n";
-//var_dump($stacker->inputInfo);
-//echo "\n";
-//echo "\n";
-//var_dump($stacker->memory);
-//echo $stacker->total;
-//echo "\n";
-//echo $stacker->highest;
-//echo "\n";
-//echo $stacker->highestIndex;
 
 // 計測結果表示
-$mem = memory_get_usage(true);
-$mem = number_format($mem);
-echo "\n";
-print("Memory:{$mem}");
-$mem = memory_get_peak_usage(true);
-$mem = number_format($mem);
-echo "\n";
-print("Memory:{$mem}");
-$time = microtime(true) - $time_start;
-echo "\n";
-echo "{$time} 秒";
-echo "\n";
+//$mem = memory_get_usage(true);
+//$mem = number_format($mem);
+//echo "\n";
+//print("Memory:{$mem}");
+//$mem = memory_get_peak_usage(true);
+//$mem = number_format($mem);
+//echo "\n";
+//print("Memory:{$mem}");
+//$time = microtime(true) - $time_start;
+//echo "\n";
+//echo "{$time} 秒";
+//echo "\n";
 

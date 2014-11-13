@@ -1,7 +1,7 @@
 <?php
 
 // テストデータ作成
-$testData = "300";
+$testData = "500";
 function generator($from, $to)
 {
     for ($i = $from; $i <= $to; ++$i) {
@@ -13,7 +13,7 @@ function generator($from, $to)
     }
 }
 
-$g = generator(1, 300);
+$g = generator(1, 500);
 foreach ($g as $val) {
     $testData .= "\n" . $val;
 }
